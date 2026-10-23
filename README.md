@@ -1,37 +1,15 @@
-# 📊 SIEM Log Anomaly & Brute-Force Attack Detector
+# OpenSSH Authentication Log Analyzer
 
-[![Security Audit](https://img.shields.io/badge/Security-Educational%20Tool-emerald?style=for-the-badge)](https://github.com/sparkx313/cybersecurity-siem-log-analyzer)
-[![License: MIT](https://img.shields.io/badge/License-MIT-gold?style=for-the-badge)](LICENSE)
-[![Python 3.11](https://img.shields.io/badge/Python-3.11%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+An offline CLI that reads OpenSSH authentication log files, counts failed and successful login events by source IP, and flags IPs that exceed a configurable failure threshold. Supports plain text and gzip-compressed files; only Python's standard library is required.
 
-## 📌 Description
-Security Information & Event Management (SIEM) log analyzer detecting SSH brute-force patterns, IP anomaly frequencies, and authorization failures.
+## Run
 
----
+~~~sh
+python log_analyzer.py --input /var/log/auth.log
+python log_analyzer.py --input auth.log.gz --threshold 10 --format json --output report.json
+python log_analyzer.py --input auth.log --threshold 5 --fail-on-alert
+~~~
 
-## 🚀 Key Features
-- **Pure Python Implementation**: Lightweight, modular codebase with standard library efficiency.
-- **Security-First Architecture**: Built for educational ethical security assessments, red team exercises, and blue team defense auditing.
-- **Clear CLI Outputs**: Structured logging, status scores, and security alert formatting.
+The analyzer recognizes common sshd password, public-key, and keyboard-interactive messages. It streams the input and does not upload or retain raw log lines. Reports include failed usernames to support local incident review.
 
----
-
-## 📦 Usage Instructions
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/sparkx313/cybersecurity-siem-log-analyzer.git
-   cd cybersecurity-siem-log-analyzer
-   ```
-
-2. **Run the security tool**:
-   ```bash
-   python log_analyzer.py
-   ```
-
----
-
-## ⚠️ Educational Disclaimer
-This repository is created strictly for educational purposes, security auditing, and defensive research. Do not execute against target systems without explicit authorization.
-
-Developed with ❤️ by **sparkx313**.
+The threshold counts matching events across the whole supplied file, not a time window. This is batch triage, not a live SIEM, an intrusion detector, or proof that an IP is malicious. Other log formats and authentication methods may not match these patterns; review the source log when the report has unmatched lines.
